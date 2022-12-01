@@ -1,29 +1,9 @@
-#include <stdlib.h>
-#include <time.h>
-#include <stdio.h>
-
-/**
- * main - Determines if a number is positive, negative or zero.
- *
- * Return: Always 0 (Success)
- */
-int main(void)
-{
-	int n;
-
-	srand(time(0));
-	n = rand() - RAND_MAX / 2;
-	if (n > 0)
-	{
-		printf("%d is positive\n", n);
-	}
-	else if (n == 0)
-	{
-		printf("%d is zero\n", n);
-	}
-	else
-	{
-		printf("%d is negative\n", n);
-	}
-	return (0);
-}
+#!/usr/bin/python3
+import random
+number = random.randint(-10, 10)
+if number > 0:
+    print("{:d} is positive".format(number))
+elif number == 0:
+    print("{:d} is zero".format(number))
+else:
+    print("{:d} is negative".format(number))
