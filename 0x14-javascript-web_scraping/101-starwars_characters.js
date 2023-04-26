@@ -1,25 +1,32 @@
 #!/usr/bin/node
 // retrieves all character names in SW film
-const request = require('request');
-const FILM_URL = `http://swapi.co/api/films/${process.argv[2]}`;
-let characters;
-const dict = {};
-request(FILM_URL, function (error, response, body) {
+onst request = require('request');
+
+const movieID = process.argv[2];
+
+request(`https://swapi-api.alx-tools.com/api/films/${movieID}`, function (error, response, body) {
   if (error) {
-    throw new Error(error);
-  }
-  characters = JSON.parse(body).characters;
-  for (const url of characters) {
-    request(url, (error, response, body) =>
-      !error && addData(url, JSON.parse(body).name));
+    console.error(error);
+  } else {
+    const movie = JSON.parse(body);
+    const characterPromises = movie.characters.map(characterUrl => {
+      return new Promise((resolve, reject) => {
+        request(characterUrl, function (error, response, body) {
+          if (error) {
+            reject(error);
+          } else {
+            const character = JSON.parse(body);
+            resolve(character.name);
+          }
+        });
+      });
+    });
+    Promise.all(characterPromises).then(characters => {
+      for (let i = 0; i < characters.length; i++) {
+        console.log(movie.characters[i] + ': ' + characters[i]);
+      }
+    }).catch(error => {
+      console.error(error);
+    });
   }
 });
-
-function addData (url, name) {
-  dict[url] = name;
-  if (Object.entries(dict).length === characters.length) {
-    for (const url of characters) {
-      console.log(dict[url]);
-    }
-  }
-}
